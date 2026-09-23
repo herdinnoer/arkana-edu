@@ -14,11 +14,13 @@ import {
 import type { LucideIcon } from "lucide-react";
 import {
   BookOpen,
+  BookText,
   CheckCircle,
   ChevronRight,
   CircleHelp,
   CreditCard,
   LayoutGrid,
+  LayoutPanelLeft,
   Lock,
   Package,
   PanelLeftClose,
@@ -27,7 +29,11 @@ import {
   Settings,
   UserCheck,
   Users,
+  UsersRound,
   ChevronsUpDown,
+  UserStar,
+  ClockCheck,
+  UserRoundCog,
 } from "lucide-react";
 
 type NavItem = {
@@ -42,10 +48,10 @@ const sections: { title: string; items: NavItem[] }[] = [
   {
     title: "Main",
     items: [
-      { label: "Overview", icon: LayoutGrid, active: true },
-      { label: "Students", icon: Users },
-      { label: "Classes & Curriculum", icon: BookOpen },
-      { label: "Staff & Teachers", icon: UserCheck },
+      { label: "Overview", icon: LayoutPanelLeft, active: true },
+      { label: "Students", icon: UsersRound },
+      { label: "Classes & Curriculum", icon: BookText },
+      { label: "Staff & Teachers", icon: UserStar },
     ],
   },
   {
@@ -53,7 +59,7 @@ const sections: { title: string; items: NavItem[] }[] = [
     items: [
       { label: "Transactions", icon: CreditCard },
       { label: "Budget Management", icon: PieChart, hasChevron: true },
-      { label: "Approvals", icon: CheckCircle, badge: 4 },
+      { label: "Approvals", icon: ClockCheck, badge: 4 },
     ],
   },
   {
@@ -64,7 +70,7 @@ const sections: { title: string; items: NavItem[] }[] = [
     title: "Settings",
     items: [
       { label: "Settings", icon: Settings },
-      { label: "Users & Permissions", icon: Lock },
+      { label: "Users & Permissions", icon: UserRoundCog },
       { label: "Help", icon: CircleHelp },
     ],
   },
@@ -258,11 +264,11 @@ export function Sidebar() {
           transition="background 0.2s"
           _hover={{ bg: "gray.200" }}
         >
-          <HStack gap="12px">
+          <HStack gap="10px">
             <Image
               src="https://i.pravatar.cc/150?u=dadang"
               alt="Dadang Jordan"
-              boxSize="36px"
+              boxSize="40px"
               borderRadius="full"
               objectFit="cover"
               border="1px solid"
@@ -272,10 +278,9 @@ export function Sidebar() {
             {!isCollapsed && (
               <Box textAlign="left">
                 <Text
-                  fontSize="14px"
+                  fontSize="16px"
                   fontWeight="semibold"
-                  lineHeight="tight"
-                  color="gray.900"
+                  color="text.primary"
                 >
                   Dadang Jordan
                 </Text>

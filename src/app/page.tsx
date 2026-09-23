@@ -14,32 +14,83 @@ import {
   Table,
   Avatar,
   Center,
+  Image,
 } from "@chakra-ui/react";
 import {
   ArrowUpRight,
   TrendingUp,
-  Clock,
-  Sparkles,
-  UserPlus,
-  Shield,
   BookOpen,
   Download,
   ArrowUp,
   Check,
   X,
-  CheckCircle,
+  UserRoundPlus,
+  LayoutList,
+  UserRoundPen,
+  CalendarMinus2,
+  CheckLine,
+  ClockCheck,
+  UserCog,
 } from "lucide-react";
-import { Sidebar } from "../components/Layout/sidebar"; // Sesuaikan path jika berbeda
-import { Header } from "../components/Layout/header"; // Import header yang baru dibuat
+import { Sidebar } from "../components/Layout/sidebar";
+import { Header } from "../components/Layout/header";
+import { GlossyButton } from "../components/ui/Button";
+import { useEffect, useState } from "react";
+
+function useCountUp(
+  end: number,
+  duration: number = 1000,
+  decimals: number = 0,
+) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let startTime: number | null = null;
+    let animationFrameId: number;
+
+    const animate = (currentTime: number) => {
+      if (!startTime) startTime = currentTime;
+      const progress = Math.min((currentTime - startTime) / duration, 1);
+
+      const easeProgress = 1 - Math.pow(1 - progress, 4);
+
+      setCount(easeProgress * end);
+
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(animate);
+      } else {
+        setCount(end);
+      }
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [end, duration]);
+
+  return Number(count).toFixed(decimals);
+}
 
 export default function OverviewPage() {
+  const [, setIsLoading] = useState(true);
+  const attendanceRate = useCountUp(94.8, 1000, 1);
+  const studentsPresent = useCountUp(1850, 1000, 0);
+  const staffPresent = useCountUp(210, 1000, 0);
+  const activeClasses = useCountUp(65, 1000, 0);
+  const classCapacity = useCountUp(85, 1000, 0);
+  const remainingBudget = useCountUp(68, 1000, 0);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    // Pembungkus utama memenuhi layar penuh dan dikunci agar tidak ada scrollbar luar
     <Flex h="100vh" w="100vw" bg="bg.muted" overflow="hidden">
-      {/* 1. SIDEBAR (Diam / Fixed di kiri) */}
       <Sidebar />
 
-      {/* 2. AREA KANAN (Header + Konten Utama) */}
       <Flex
         flex="1"
         direction="column"
@@ -53,12 +104,9 @@ export default function OverviewPage() {
         transition="all 0.3s ease-in-out"
         overflow="hidden"
       >
-        {/* HEADER (Diam di atas) */}
         <Header />
 
-        {/* KONTEN UTAMA (Hanya bagian ini yang bisa di-scroll) */}
         <Box flex="1" overflowY="auto" p="24px">
-          {/* Last Updated Timestamp */}
           <HStack gap="8px" mb="24px">
             <Text fontSize="20px" fontWeight="semibold" color="text.primary">
               Last Updated
@@ -71,13 +119,9 @@ export default function OverviewPage() {
             </Text>
           </HStack>
 
-          {/* GRID UTAMA: KIRI (Statistik & Tabel) & KANAN (Arkana Agent) */}
-          <Flex gap="24px" align="start">
-            {/* KOLOM KIRI */}
+          <Flex gap="24px" align="stretch">
             <VStack flex="1" align="stretch" gap="24px">
-              {/* TOP STATS ROW */}
               <Flex gap="24px">
-                {/* Kartu Besar Attendance */}
                 <Box
                   flex="1.2"
                   bg="bg.primary"
@@ -94,14 +138,16 @@ export default function OverviewPage() {
                   >
                     Overall School Attendance Today
                   </Text>
+
                   <Heading
                     fontSize="60px"
                     fontWeight="bold"
                     color="text.primary"
                     mb="32px"
                   >
-                    94.8%
+                    {attendanceRate}%
                   </Heading>
+
                   <HStack gap="4px" mb="24px">
                     <Icon as={TrendingUp} boxSize="16px" color="green.500" />
                     <Text
@@ -122,9 +168,7 @@ export default function OverviewPage() {
 
                   <Box w="full" h="1px" bg="border.primary" my="24px" />
 
-                  {/* Bagian Students & Staff Present yang mengisi lebar secara fleksibel */}
                   <HStack justify="flex-start" gap="24px" w="full">
-                    {/* Kolom Students */}
                     <VStack align="start" gap="4px" flex="1">
                       <Text fontSize="14px" color="text.secondary">
                         Students Present
@@ -134,7 +178,7 @@ export default function OverviewPage() {
                         fontWeight="bold"
                         color="text.primary"
                       >
-                        1850{" "}
+                        {studentsPresent}{" "}
                         <Text
                           as="span"
                           fontSize="16px"
@@ -146,7 +190,6 @@ export default function OverviewPage() {
                       </Text>
                     </VStack>
 
-                    {/* Kolom Staff */}
                     <VStack align="start" gap="4px" flex="1">
                       <Text fontSize="14px" color="text.secondary">
                         Staff Present
@@ -156,7 +199,7 @@ export default function OverviewPage() {
                         fontWeight="bold"
                         color="text.primary"
                       >
-                        210{" "}
+                        {staffPresent}{" "}
                         <Text
                           as="span"
                           fontSize="16px"
@@ -170,7 +213,6 @@ export default function OverviewPage() {
                   </HStack>
                 </Box>
 
-                {/* 3 Kartu Kecil Kanan Statistik */}
                 <VStack flex="1" align="stretch" gap="16px">
                   <Box
                     bg="bg.primary"
@@ -198,7 +240,7 @@ export default function OverviewPage() {
                       fontWeight="bold"
                       color="text.primary"
                     >
-                      65
+                      {activeClasses}
                     </Heading>
                   </Box>
 
@@ -228,7 +270,7 @@ export default function OverviewPage() {
                       fontWeight="bold"
                       color="text.primary"
                     >
-                      85%
+                      {classCapacity}%
                     </Heading>
                   </Box>
 
@@ -258,13 +300,12 @@ export default function OverviewPage() {
                       fontWeight="bold"
                       color="text.primary"
                     >
-                      68%
+                      {remainingBudget}%
                     </Heading>
                   </Box>
                 </VStack>
               </Flex>
 
-              {/* PENDING APPROVALS TABLE SECTION */}
               <Box
                 bg="bg.primary"
                 px="24px"
@@ -284,7 +325,7 @@ export default function OverviewPage() {
                       boxShadow="sm"
                     >
                       <Icon
-                        as={CheckCircle}
+                        as={ClockCheck}
                         boxSize="18px"
                         color="text.secondary"
                       />
@@ -331,43 +372,72 @@ export default function OverviewPage() {
                   </HStack>
                 </Flex>
 
-                {/* Tabel Sederhana */}
-                <Box overflowX="auto">
+                <Box
+                  overflowX="auto"
+                  bg="bg.primary"
+                  borderRadius="xl"
+                  border="1px solid"
+                  borderColor="border.primary"
+                  overflowY="hidden"
+                  w="full"
+                >
                   <Table.Root size="sm" variant="line">
                     <Table.Header>
                       <Table.Row bg="bg.muted">
                         <Table.ColumnHeader
-                          py="10px"
-                          px="12px"
-                          fontSize="12px"
-                          color="text.secondary"
+                          py="12px"
+                          px="20px"
+                          fontSize="14px"
+                          fontWeight="medium"
+                          color="text.primary"
+                          borderRight="1px solid"
+                          borderColor="border.primary"
                         >
-                          Approval Type
+                          <HStack gap="8px">
+                            <Icon as={LayoutList} boxSize="16px" />
+                            <Text>Approval Type</Text>
+                          </HStack>
                         </Table.ColumnHeader>
                         <Table.ColumnHeader
-                          py="10px"
-                          px="12px"
-                          fontSize="12px"
-                          color="text.secondary"
+                          py="12px"
+                          px="20px"
+                          fontSize="14px"
+                          fontWeight="medium"
+                          color="text.primary"
+                          borderRight="1px solid"
+                          borderColor="border.primary"
                         >
-                          Requester
+                          <HStack gap="8px">
+                            <Icon as={UserRoundPen} boxSize="16px" />
+                            <Text>Requester</Text>
+                          </HStack>
                         </Table.ColumnHeader>
                         <Table.ColumnHeader
-                          py="10px"
-                          px="12px"
-                          fontSize="12px"
-                          color="text.secondary"
+                          py="12px"
+                          px="20px"
+                          fontSize="14px"
+                          fontWeight="medium"
+                          color="text.primary"
+                          borderRight="1px solid"
+                          borderColor="border.primary"
                         >
-                          Request Date
+                          <HStack gap="8px">
+                            <Icon as={CalendarMinus2} boxSize="16px" />
+                            <Text>Request Date</Text>
+                          </HStack>
                         </Table.ColumnHeader>
                         <Table.ColumnHeader
-                          py="10px"
-                          px="12px"
-                          fontSize="12px"
-                          color="text.secondary"
-                          textAlign="right"
+                          py="12px"
+                          px="20px"
+                          fontSize="14px"
+                          fontWeight="medium"
+                          color="text.primary"
+                          w="1%"
                         >
-                          Action
+                          <HStack gap="8px">
+                            <Icon as={CheckLine} boxSize="16px" />
+                            <Text>Action</Text>
+                          </HStack>
                         </Table.ColumnHeader>
                       </Table.Row>
                     </Table.Header>
@@ -377,76 +447,90 @@ export default function OverviewPage() {
                           type: "Purchase Order - IT Equipment",
                           name: "Maria Garcia",
                           date: "9 Sep 2026, 10:21",
+                          avatar: "/avatars/maria-garcia.png",
                         },
                         {
                           type: "Leave Request - Staff",
                           name: "Ahmad Wardani",
                           date: "8 Sep 2026, 09:43",
+                          avatar: "/avatars/ahmad-wardani.png",
                         },
                         {
                           type: "Field Trip Approval - Grade 8",
                           name: "Sabrina Nurhay...",
                           date: "8 Sep 2026, 14:11",
+                          avatar: "/avatars/sabrina-nurhayati.png",
                         },
                         {
                           type: "Budget for Annual School Play",
                           name: "Kenjiro Tsunoda",
                           date: "6 Sep 2026, 08:52",
+                          avatar: "/avatars/kenjiro-tsunoda.png",
                         },
                       ].map((row, i) => (
-                        <Table.Row key={i}>
+                        <Table.Row
+                          key={i}
+                          _hover={{ bg: "bg.muted" }}
+                          transition="background-color 0.2s ease-in-out"
+                        >
                           <Table.Cell
-                            py="14px"
-                            px="12px"
-                            fontSize="13px"
-                            fontWeight="600"
+                            py="16px"
+                            px="20px"
+                            fontSize="14px"
+                            fontWeight="regular"
                             color="text.primary"
+                            borderRight="1px solid"
+                            borderColor="border.primary"
                           >
                             {row.type}
                           </Table.Cell>
                           <Table.Cell
-                            py="14px"
-                            px="12px"
-                            fontSize="13px"
-                            color="text.secondary"
+                            py="16px"
+                            px="20px"
+                            fontSize="14px"
+                            color="text.primary"
+                            borderRight="1px solid"
+                            borderColor="border.primary"
                           >
-                            <HStack gap="8px">
+                            <HStack gap="10px">
                               <Avatar.Root size="2xs">
+                                <Avatar.Image src={row.avatar} />
                                 <Avatar.Fallback name={row.name} />
                               </Avatar.Root>
                               <Text>{row.name}</Text>
                             </HStack>
                           </Table.Cell>
                           <Table.Cell
-                            py="14px"
-                            px="12px"
-                            fontSize="13px"
-                            color="text.secondary"
+                            py="16px"
+                            px="20px"
+                            fontSize="14px"
+                            color="text.primary"
+                            borderRight="1px solid"
+                            borderColor="border.primary"
                           >
                             {row.date}
                           </Table.Cell>
-                          <Table.Cell py="14px" px="12px" textAlign="right">
-                            <HStack gap="6px" justify="flex_end">
+                          <Table.Cell py="16px" px="20px" textAlign="right">
+                            <HStack gap="8px" justify="flex-start">
                               <Button
                                 size="xs"
                                 variant="subtle"
                                 colorPalette="red"
+                                w="30px"
+                                h="30px"
+                                borderRadius="lg"
+                              >
+                                <Icon as={X} boxSize="16px" />
+                              </Button>
+                              <GlossyButton
+                                colorScheme="green"
+                                h="30px"
                                 px="8px"
-                                h="28px"
+                                borderRadius="lg"
                               >
-                                <Icon as={X} boxSize="14px" />
-                              </Button>
-                              <Button
-                                size="xs"
-                                bg="green.600"
-                                color="white"
-                                px="12px"
-                                h="28px"
-                                _hover={{ bg: "green.700" }}
-                              >
-                                <Icon as={Check} boxSize="14px" />
+                                <Icon as={Check} boxSize="16px" />
                                 <Text fontSize="12px">Approve</Text>
-                              </Button>
+                              </GlossyButton>
                             </HStack>
                           </Table.Cell>
                         </Table.Row>
@@ -457,164 +541,225 @@ export default function OverviewPage() {
               </Box>
             </VStack>
 
-            {/* KOLOM KANAN: ARKANA AGENT PANEL */}
             <Box
               w="360px"
-              bg="bg.primary"
+              h="screen"
+              position="sticky"
+              top="0px"
+              backgroundImage="url('/bg-arkana-agent.png')"
+              backgroundSize="100% 100%"
+              backgroundPosition="center"
               borderRadius="24px"
-              border="1px solid"
-              borderColor="bg.muted"
-              boxShadow="sm"
+              border="1.7px solid"
+              borderColor="#DF358D"
               overflow="hidden"
+              display="flex"
+              flexDirection="column"
             >
-              {/* Header Gradient Pink */}
-              <Box
-                bgGradient="linear(to-r, brand.primary, pink.300)"
-                p="16px"
-                color="white"
-              >
-                <HStack gap="8px">
-                  <Icon as={Sparkles} boxSize="18px" />
-                  <Text fontWeight="bold" fontSize="15px">
+              <style>
+                {`
+                  @keyframes float {
+                    0% { transform: translateY(0px); }
+                    50% { transform: translateY(-8px); }
+                    100% { transform: translateY(0px); }
+                  }
+                  @keyframes pulse-glow {
+                    0% { box-shadow: 0 0 0 0 rgba(241, 101, 174, 0.4); }
+                    70% { box-shadow: 0 0 0 20px rgba(241, 101, 174, 0); }
+                    100% { box-shadow: 0 0 0 0 rgba(241, 101, 174, 0); }
+                  }
+                  @keyframes slide-up-fade {
+                    0% { opacity: 0; transform: translateY(20px); }
+                    100% { opacity: 1; transform: translateY(0); }
+                  }
+                `}
+              </style>
+
+              <Box p="16px" pb="40px">
+                <HStack gap="10px">
+                  <Image
+                    src="/agent-1.svg"
+                    alt="Arkana Logo"
+                    objectFit="contain"
+                  />
+                  <Text fontWeight="bold" fontSize="16px" color="white">
                     Arkana Agent
                   </Text>
                 </HStack>
               </Box>
 
-              {/* Greeting & Avatar */}
-              <Box p="24px" textAlign="center">
-                <Center
-                  w="56px"
-                  h="56px"
-                  bg="pink.50"
-                  color="brand.primary"
-                  borderRadius="full"
-                  mx="auto"
-                  mb="12px"
-                  border="1px solid"
-                  borderColor="pink.100"
-                >
-                  <Icon as={Sparkles} boxSize="24px" />
-                </Center>
-                <Heading
-                  fontSize="16px"
-                  fontWeight="bold"
-                  color="text.primary"
-                  mb="4px"
-                >
-                  Hello, Dadang
-                </Heading>
-                <Text fontSize="13px" color="text.secondary" mb="24px">
-                  How can I help you today?
-                </Text>
+              <Flex
+                bg="bg.primary"
+                borderTopRadius="24px"
+                borderBottomRadius="24px"
+                mt="-24px"
+                p="16px"
+                flex="1"
+                flexDirection="column"
+                justifyContent="flex-end"
+                position="relative"
+              >
+                <Box textAlign="center" pt="8px" mb="320px">
+                  <Box
+                    boxSize="96px"
+                    mx="auto"
+                    mb="0px"
+                    borderRadius="full"
+                    bg="transparant"
+                    animation="pulse-glow 2.5s infinite, float 4s ease-in-out infinite"
+                  >
+                    <Image
+                      src="/agent-2.png"
+                      alt="Agent Avatar"
+                      boxSize="96px"
+                      mx="auto"
+                      objectFit="contain"
+                    />
+                  </Box>
 
-                {/* 4 Action Buttons Grid */}
-                <Flex direction="column" gap="8px" mb="24px">
-                  <Flex gap="8px">
+                  <Box
+                    animation="slide-up-fade 1s ease-out 1s forwards"
+                    opacity="0"
+                  >
+                    <Heading
+                      fontSize="18px"
+                      fontWeight="bold"
+                      color="text.primary"
+                      mb="2px"
+                    >
+                      Hello, Dadang
+                    </Heading>
+
+                    <Text
+                      fontSize="14px"
+                      color="text.primary"
+                      fontWeight="regular"
+                    >
+                      How can I help you today?
+                    </Text>
+                  </Box>
+                </Box>
+
+                <Flex
+                  direction="column"
+                  gap="12px"
+                  mb="16px"
+                  animation="slide-up-fade 1s ease-out 2s forwards"
+                  opacity="0"
+                >
+                  <Flex gap="12px">
                     <Button
                       flex="1"
                       variant="outline"
                       size="sm"
-                      borderColor="bg.muted"
+                      borderColor="border.primary"
+                      borderRadius="lg"
                       color="text.primary"
+                      shadow="xs"
                       justifyContent="flex-start"
                       fontSize="12px"
-                      fontWeight="500"
+                      fontWeight="regular"
+                      _hover={{ bg: "bg.muted" }}
                     >
                       <Icon
-                        as={UserPlus}
+                        as={UserRoundPlus}
                         boxSize="14px"
-                        color="text.secondary"
-                      />{" "}
+                        color="text.primary"
+                      />
                       Add User
                     </Button>
                     <Button
                       flex="1"
                       variant="outline"
                       size="sm"
-                      borderColor="bg.muted"
+                      borderColor="border.primary"
+                      borderRadius="lg"
                       color="text.primary"
+                      shadow="xs"
                       justifyContent="flex-start"
                       fontSize="12px"
-                      fontWeight="500"
+                      fontWeight="regular"
+                      _hover={{ bg: "bg.muted" }}
                     >
-                      <Icon as={Shield} boxSize="14px" color="text.secondary" />{" "}
+                      <Icon as={UserCog} boxSize="14px" color="text.primary" />
                       Manage Role
                     </Button>
                   </Flex>
-                  <Flex gap="8px">
+                  <Flex gap="12px">
                     <Button
                       flex="1"
                       variant="outline"
                       size="sm"
-                      borderColor="bg.muted"
+                      borderColor="border.primary"
+                      borderRadius="lg"
                       color="text.primary"
+                      shadow="xs"
                       justifyContent="flex-start"
                       fontSize="12px"
-                      fontWeight="500"
+                      fontWeight="regular"
+                      _hover={{ bg: "bg.muted" }}
                     >
-                      <Icon
-                        as={BookOpen}
-                        boxSize="14px"
-                        color="text.secondary"
-                      />{" "}
+                      <Icon as={BookOpen} boxSize="14px" color="text.primary" />
                       Manage Class
                     </Button>
                     <Button
                       flex="1"
                       variant="outline"
                       size="sm"
-                      borderColor="bg.muted"
+                      borderColor="border.primary"
+                      borderRadius="lg"
                       color="text.primary"
+                      shadow="xs"
                       justifyContent="flex-start"
                       fontSize="12px"
-                      fontWeight="500"
+                      fontWeight="regular"
+                      _hover={{ bg: "bg.muted" }}
                     >
-                      <Icon
-                        as={Download}
-                        boxSize="14px"
-                        color="text.secondary"
-                      />{" "}
+                      <Icon as={Download} boxSize="14px" color="text.primary" />
                       Export Data
                     </Button>
                   </Flex>
                 </Flex>
 
-                {/* Chat Input Box */}
                 <Flex
                   align="center"
-                  bg="bg.muted"
-                  px="12px"
-                  py="8px"
+                  bg="bg.primary"
+                  pl="1px"
+                  pr="8px"
+                  py="2px"
                   borderRadius="xl"
                   border="1px solid"
-                  borderColor="bg.muted"
+                  borderColor="border.primary"
+                  animation="slide-up-fade 1s ease-out 3s forwards"
+                  opacity="0"
+                  _focusWithin={{
+                    borderColor: "#f08ec1",
+                    boxShadow: "0 0 0 1px #f3a1cb",
+                  }}
+                  transition="all 0.5s"
                 >
                   <Input
                     placeholder="Ask something..."
-                    fontSize="13px"
+                    fontSize="14px"
                     color="text.primary"
                     border="none"
-                    _focus={{ outline: "none" }}
+                    _focus={{ outline: "none", boxShadow: "none" }}
                     _hover={{ border: "none" }}
                     _active={{ border: "none" }}
                     _placeholder={{ color: "text.secondary" }}
                   />
-                  <Flex
-                    as="button"
-                    w="28px"
-                    h="28px"
-                    bg="brand.primary"
-                    color="white"
+                  <GlossyButton
+                    colorScheme="pink"
+                    w="32px"
+                    h="32px"
+                    minW="32px"
+                    p="0px"
                     borderRadius="lg"
-                    align="center"
-                    justify="center"
-                    _hover={{ opacity: 0.9 }}
                   >
                     <Icon as={ArrowUp} boxSize="16px" />
-                  </Flex>
+                  </GlossyButton>
                 </Flex>
-              </Box>
+              </Flex>
             </Box>
           </Flex>
         </Box>
