@@ -89,6 +89,24 @@ export default function OverviewPage() {
 
   return (
     <Flex h="100vh" w="100vw" bg="bg.muted" overflow="hidden">
+      <style>
+        {`
+                  @keyframes float {
+                    0% { transform: translateY(0px); }
+                    50% { transform: translateY(-8px); }
+                    100% { transform: translateY(0px); }
+                  }
+                  @keyframes pulse-glow {
+                    0% { box-shadow: 0 0 0 0 rgba(241, 101, 174, 0.4); }
+                    70% { box-shadow: 0 0 0 20px rgba(241, 101, 174, 0); }
+                    100% { box-shadow: 0 0 0 0 rgba(241, 101, 174, 0); }
+                  }
+                  @keyframes slide-up-fade {
+                    0% { opacity: 0; transform: translateY(20px); }
+                    100% { opacity: 1; transform: translateY(0); }
+                  }
+                `}
+      </style>
       <Sidebar />
 
       <Flex
@@ -107,7 +125,12 @@ export default function OverviewPage() {
         <Header />
 
         <Box flex="1" overflowY="auto" p="24px">
-          <HStack gap="8px" mb="24px">
+          <HStack
+            gap="8px"
+            mb="24px"
+            animation="slide-up-fade 0.5s ease-out 0.1s forwards"
+            opacity="0"
+          >
             <Text fontSize="20px" fontWeight="semibold" color="text.primary">
               Last Updated
             </Text>
@@ -129,6 +152,8 @@ export default function OverviewPage() {
                   borderRadius="24px"
                   border="1px solid"
                   borderColor="border.primary"
+                  animation="slide-up-fade 0.5s ease-out 0.2s forwards"
+                  opacity="0"
                 >
                   <Text
                     fontSize="14px"
@@ -220,6 +245,8 @@ export default function OverviewPage() {
                     borderRadius="24px"
                     border="1px solid"
                     borderColor="border.primary"
+                    animation="slide-up-fade 0.5s ease-out 0.3s forwards"
+                    opacity="0"
                   >
                     <Flex justify="space-between" align="center" mb="4px">
                       <Text
@@ -250,6 +277,8 @@ export default function OverviewPage() {
                     borderRadius="24px"
                     border="1px solid"
                     borderColor="border.primary"
+                    animation="slide-up-fade 0.5s ease-out 0.4s forwards"
+                    opacity="0"
                   >
                     <Flex justify="space-between" align="center" mb="4px">
                       <Text
@@ -280,6 +309,8 @@ export default function OverviewPage() {
                     borderRadius="24px"
                     border="1px solid"
                     borderColor="border.primary"
+                    animation="slide-up-fade 0.5s ease-out 0.5s forwards"
+                    opacity="0"
                   >
                     <Flex justify="space-between" align="center" mb="4px">
                       <Text
@@ -313,6 +344,8 @@ export default function OverviewPage() {
                 borderRadius="24px"
                 border="1px solid"
                 borderColor="border.primary"
+                animation="slide-up-fade 0.5s ease-out 0.6s forwards"
+                opacity="0"
               >
                 <Flex justify="space-between" align="center" mb="20px">
                   <HStack align="flex-start" gap="16px">
@@ -556,25 +589,6 @@ export default function OverviewPage() {
               display="flex"
               flexDirection="column"
             >
-              <style>
-                {`
-                  @keyframes float {
-                    0% { transform: translateY(0px); }
-                    50% { transform: translateY(-8px); }
-                    100% { transform: translateY(0px); }
-                  }
-                  @keyframes pulse-glow {
-                    0% { box-shadow: 0 0 0 0 rgba(241, 101, 174, 0.4); }
-                    70% { box-shadow: 0 0 0 20px rgba(241, 101, 174, 0); }
-                    100% { box-shadow: 0 0 0 0 rgba(241, 101, 174, 0); }
-                  }
-                  @keyframes slide-up-fade {
-                    0% { opacity: 0; transform: translateY(20px); }
-                    100% { opacity: 1; transform: translateY(0); }
-                  }
-                `}
-              </style>
-
               <Box p="16px" pb="40px">
                 <HStack gap="10px">
                   <Image
@@ -618,7 +632,7 @@ export default function OverviewPage() {
                   </Box>
 
                   <Box
-                    animation="slide-up-fade 1s ease-out 1s forwards"
+                    animation="slide-up-fade 0.5s ease-out 0.7s forwards"
                     opacity="0"
                   >
                     <Heading
@@ -644,7 +658,7 @@ export default function OverviewPage() {
                   direction="column"
                   gap="12px"
                   mb="16px"
-                  animation="slide-up-fade 1s ease-out 2s forwards"
+                  animation="slide-up-fade 0.5s ease-out 0.8s forwards"
                   opacity="0"
                 >
                   <Flex gap="12px">
@@ -730,7 +744,7 @@ export default function OverviewPage() {
                   borderRadius="xl"
                   border="1px solid"
                   borderColor="border.primary"
-                  animation="slide-up-fade 1s ease-out 3s forwards"
+                  animation="slide-up-fade 0.5s ease-out 0.9s forwards"
                   opacity="0"
                   _focusWithin={{
                     borderColor: "#f08ec1",

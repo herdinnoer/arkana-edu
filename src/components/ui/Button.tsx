@@ -10,7 +10,8 @@ interface GlossyButtonProps extends ButtonProps {
 
 export function GlossyButton({
   children,
-  colorScheme = "blue",
+  colorScheme = "pink",
+  borderRadius = "sm, lg, xl",
   ...props
 }: GlossyButtonProps) {
   const themes = {
@@ -42,6 +43,7 @@ export function GlossyButton({
       bgImage={currentTheme.gradient}
       border="1px solid"
       borderColor={currentTheme.border}
+      borderRadius={borderRadius}
       boxShadow="inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 2px 4px rgba(0, 0, 0, 0.1)"
       _hover={{
         bgImage: currentTheme.hoverGradient,

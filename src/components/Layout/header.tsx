@@ -1,5 +1,7 @@
 "use client";
 
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 import {
   Flex,
   Heading,
@@ -9,13 +11,53 @@ import {
   Box,
   ClientOnly,
   Skeleton,
+  Button,
+  Text,
 } from "@chakra-ui/react";
-import { Search, Bell, Sun, Moon } from "lucide-react";
+import {
+  Search,
+  Bell,
+  Sun,
+  Moon,
+  ArrowLeft,
+  UsersRound,
+  LayoutPanelLeft,
+  BookText,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { useColorMode } from "../ui/color-mode";
 
-export function Header() {
+// Tambahkan Interface Props untuk mode detail/breadcrumb
+interface HeaderProps {
+  backHref?: string;
+  breadcrumbIcon?: LucideIcon;
+  breadcrumbText?: string;
+}
+
+// Tambahkan default parameter = {} agar aman jika dipanggil tanpa props
+export function Header({
+  backHref,
+  breadcrumbIcon,
+  breadcrumbText,
+}: HeaderProps = {}) {
+  const pathname = usePathname();
   const { colorMode, toggleColorMode } = useColorMode();
   const isDark = colorMode === "dark";
+
+  // Logika otomatis menentukan Judul & Icon default berdasarkan URL
+  let defaultTitle = "Overview";
+  let DefaultIcon = LayoutPanelLeft;
+
+  if (pathname?.startsWith("/students")) {
+    defaultTitle = "Students";
+    DefaultIcon = UsersRound;
+  } else if (pathname?.startsWith("/classes")) {
+    defaultTitle = "Classes & Curriculum";
+    DefaultIcon = BookText;
+  }
+
+  // Gunakan icon dari props jika ada, jika tidak gunakan icon default
+  const ActiveIcon = breadcrumbIcon || DefaultIcon;
 
   return (
     <Flex
@@ -32,10 +74,40 @@ export function Header() {
       zIndex="10"
       w="full"
     >
-      <Heading fontSize="20px" fontWeight="semibold" color="text.primary">
-        Overview
-      </Heading>
+      {/* BAGIAN KIRI: BREADCRUMB / JUDUL DINAMIS */}
+      {backHref && breadcrumbText ? (
+        // Tampilan Mode Navigasi (Detail Page)
+        <HStack gap="16px" align="center">
+          <Link href={backHref ?? "#"} style={{ textDecoration: "none" }}>
+            <Button
+              variant="ghost"
+              color="text.secondary"
+              size="sm"
+              px="0"
+              _hover={{ bg: "transparent", color: "text.primary" }}
+            >
+              <Icon as={ArrowLeft} boxSize="16px" mr="6px" />
+              <Text fontSize="14px" fontWeight="medium">
+                Back
+              </Text>
+            </Button>
+          </Link>
+          <Box w="1px" h="20px" bg="border.primary" /> {/* Garis pemisah */}
+          <HStack gap="8px" color="text.primary">
+            <Icon as={ActiveIcon} boxSize="18px" color="text.secondary" />
+            <Text fontSize="18px" fontWeight="bold">
+              / {breadcrumbText}
+            </Text>
+          </HStack>
+        </HStack>
+      ) : (
+        // Tampilan Mode Standar (Overview / Students List)
+        <Heading fontSize="20px" fontWeight="semibold" color="text.primary">
+          {defaultTitle}
+        </Heading>
+      )}
 
+      {/* BAGIAN KANAN: TETAP MEMAKAI KODE ASLI LU */}
       <HStack gap="8px">
         <HStack
           bg="bg.primary"
@@ -54,11 +126,6 @@ export function Header() {
             color="text.secondary"
             border="none"
             _focus={{ outline: "none" }}
-            _focusVisible={{
-              outline: "2px solid",
-              outlineColor: "blue.500",
-              outlineOffset: "2px",
-            }}
             _hover={{ border: "none" }}
             _active={{ border: "none" }}
             _placeholder={{ color: "text.secondary" }}

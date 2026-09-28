@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   Box,
   Flex,
@@ -39,39 +41,44 @@ import {
 type NavItem = {
   label: string;
   icon: LucideIcon;
-  active?: boolean;
   hasChevron?: boolean;
   badge?: number;
+  href: string;
 };
 
 const sections: { title: string; items: NavItem[] }[] = [
   {
     title: "Main",
     items: [
-      { label: "Overview", icon: LayoutPanelLeft, active: true },
-      { label: "Students", icon: UsersRound },
-      { label: "Classes & Curriculum", icon: BookText },
-      { label: "Staff & Teachers", icon: UserStar },
+      { label: "Overview", icon: LayoutPanelLeft, href: "/" },
+      { label: "Students", icon: UsersRound, href: "/students" },
+      { label: "Classes & Curriculum", icon: BookText, href: "#" },
+      { label: "Staff & Teachers", icon: UserStar, href: "#" },
     ],
   },
   {
     title: "Financial Management",
     items: [
-      { label: "Transactions", icon: CreditCard },
-      { label: "Budget Management", icon: PieChart, hasChevron: true },
-      { label: "Approvals", icon: ClockCheck, badge: 4 },
+      { label: "Transactions", icon: CreditCard, href: "#" },
+      {
+        label: "Budget Management",
+        icon: PieChart,
+        hasChevron: true,
+        href: "#",
+      },
+      { label: "Approvals", icon: ClockCheck, badge: 4, href: "#" },
     ],
   },
   {
     title: "Asset & Resources",
-    items: [{ label: "Inventory Management", icon: Package }],
+    items: [{ label: "Inventory Management", icon: Package, href: "#" }],
   },
   {
     title: "Settings",
     items: [
-      { label: "Settings", icon: Settings },
-      { label: "Users & Permissions", icon: UserRoundCog },
-      { label: "Help", icon: CircleHelp },
+      { label: "Settings", icon: Settings, href: "#" },
+      { label: "Users & Permissions", icon: UserRoundCog, href: "#" },
+      { label: "Help", icon: CircleHelp, href: "#" },
     ],
   },
 ];
@@ -83,64 +90,72 @@ function NavButton({
   item: NavItem;
   isCollapsed: boolean;
 }) {
-  return (
-    <Box
-      as="button"
-      w="full"
-      display="flex"
-      alignItems="center"
-      justifyContent="space-between"
-      px="10px"
-      py="8px"
-      borderRadius="xl"
-      transition="all 0.2s"
-      bg={item.active ? "brand.primary" : "transparent"}
-      color={item.active ? "white" : "text.primary"}
-      _hover={{
-        bg: item.active ? "brand.primary" : "gray.200",
-      }}
-      role="group"
-      title={isCollapsed ? item.label : undefined}
-    >
-      <HStack gap="12px" minW={0}>
-        <Icon
-          as={item.icon}
-          boxSize="18px"
-          strokeWidth={item.active ? 2 : 1.5}
-          color={item.active ? "white" : "text.secondary"}
-          _groupHover={{ color: item.active ? "white" : "gray.700" }}
-          flexShrink={0}
-        />
-        {!isCollapsed && (
-          <Text fontSize="14px" fontWeight="400" truncate>
-            {item.label}
-          </Text>
-        )}
-      </HStack>
+  const pathname = usePathname();
+  const isActive =
+    item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
 
-      {!isCollapsed && (
-        <Box>
-          {item.badge ? (
-            <Center
-              h="20px"
-              minW="20px"
-              bg="bg.primary"
-              color="text.primary"
-              borderRadius="full"
-              border="1px solid"
-              borderColor="border.primary"
-              fontSize="12px"
-              fontWeight="bold"
-              px="6px"
-            >
-              {item.badge}
-            </Center>
-          ) : item.hasChevron ? (
-            <Icon as={ChevronRight} boxSize="16px" color="text.secondary" />
-          ) : null}
-        </Box>
-      )}
-    </Box>
+  return (
+    <Link
+      href={item.href}
+      style={{ width: "100%", display: "block", textDecoration: "none" }}
+    >
+      <Box
+        w="full"
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        px="10px"
+        py="8px"
+        borderRadius="xl"
+        transition="all 0.2s"
+        bg={isActive ? "brand.primary" : "transparent"}
+        color={isActive ? "white" : "text.primary"}
+        _hover={{
+          bg: isActive ? "brand.primary" : "gray.200",
+        }}
+        role="group"
+        title={isCollapsed ? item.label : undefined}
+      >
+        <HStack gap="12px" minW={0}>
+          <Icon
+            as={item.icon}
+            boxSize="18px"
+            strokeWidth={isActive ? 2 : 1.5}
+            color={isActive ? "white" : "text.secondary"}
+            _groupHover={{ color: isActive ? "white" : "gray.700" }}
+            flexShrink={0}
+          />
+          {!isCollapsed && (
+            <Text fontSize="14px" fontWeight="400" truncate>
+              {item.label}
+            </Text>
+          )}
+        </HStack>
+
+        {!isCollapsed && (
+          <Box>
+            {item.badge ? (
+              <Center
+                h="20px"
+                minW="20px"
+                bg="bg.primary"
+                color="text.primary"
+                borderRadius="full"
+                border="1px solid"
+                borderColor="border.primary"
+                fontSize="12px"
+                fontWeight="bold"
+                px="6px"
+              >
+                {item.badge}
+              </Center>
+            ) : item.hasChevron ? (
+              <Icon as={ChevronRight} boxSize="16px" color="text.secondary" />
+            ) : null}
+          </Box>
+        )}
+      </Box>
+    </Link>
   );
 }
 
