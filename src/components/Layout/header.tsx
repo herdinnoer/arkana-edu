@@ -76,27 +76,32 @@ export function Header({
     >
       {/* BAGIAN KIRI: BREADCRUMB / JUDUL DINAMIS */}
       {backHref && breadcrumbText ? (
-        // Tampilan Mode Navigasi (Detail Page)
-        <HStack gap="16px" align="center">
+        // Tampilan Mode Navigasi (Detail Page) - Menggantikan posisi judul utama
+        <HStack gap="12px" align="center">
           <Link href={backHref ?? "#"} style={{ textDecoration: "none" }}>
-            <Button
-              variant="ghost"
-              color="text.secondary"
-              size="sm"
-              px="0"
-              _hover={{ bg: "transparent", color: "text.primary" }}
-            >
-              <Icon as={ArrowLeft} boxSize="16px" mr="6px" />
-              <Text fontSize="14px" fontWeight="medium">
+            <Button variant="ghost" size="sm" gap="8px" h="36px" px="0px">
+              <Icon as={ArrowLeft} boxSize="16px" color="text.secondary" />
+              <Text fontSize="14px" fontWeight="medium" color="text.secondary">
                 Back
               </Text>
             </Button>
           </Link>
-          <Box w="1px" h="20px" bg="border.primary" /> {/* Garis pemisah */}
+
+          {/* Divider vertikal antara tombol Back dan Breadcrumb */}
+          <Box w="1px" h="20px" bg="border.primary" />
+
           <HStack gap="8px" color="text.primary">
             <Icon as={ActiveIcon} boxSize="18px" color="text.secondary" />
-            <Text fontSize="18px" fontWeight="bold">
-              / {breadcrumbText}
+            <Text fontSize="18px" fontWeight="bold" color="text.primary">
+              /{" "}
+              <Text
+                as="span"
+                fontSize="18px"
+                color="text.primary"
+                fontWeight="semibold"
+              >
+                {breadcrumbText}
+              </Text>
             </Text>
           </HStack>
         </HStack>

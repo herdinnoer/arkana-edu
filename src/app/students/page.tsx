@@ -39,6 +39,7 @@ import { Sidebar } from "../../components/Layout/sidebar";
 import { Header } from "../../components/Layout/header";
 import { GlossyButton } from "../../components/ui/Button";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 
 const MotionFlex = motion(Flex);
 
@@ -1530,16 +1531,18 @@ export default function StudentsPage() {
                               >
                                 <Icon as={MoreHorizontal} boxSize="16px" />
                               </Button>
-                              <Button
-                                size="xs"
-                                variant="outline"
-                                borderColor="border.primary"
-                                borderRadius="lg"
-                                px="12px"
-                              >
-                                <Text> View </Text>{" "}
-                                <Icon as={ChevronRight} boxSize="14px" />
-                              </Button>
+                              <Link href={`/students/${student.id}`}>
+                                <Button
+                                  size="xs"
+                                  variant="outline"
+                                  borderColor="border.primary"
+                                  borderRadius="lg"
+                                  px="12px"
+                                >
+                                  <Text> View </Text>{" "}
+                                  <Icon as={ChevronRight} boxSize="14px" />
+                                </Button>
+                              </Link>
                             </HStack>
                           </Table.Cell>
                         </Table.Row>
